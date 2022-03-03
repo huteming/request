@@ -5,6 +5,12 @@
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
+  "files": [
+    "dist",
+    "preset",
+    "src",
+    "tests"
+  ],
   "scripts": {
     "build": "npm run build:core && npm run build:preset",
     "build:core": "mfe build",
