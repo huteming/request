@@ -1,23 +1,21 @@
-import { toFormData } from '../src/utils'
-import assert from 'assert'
+import { toFormData } from '@/utils'
 
-test('toFormData: 表单格式不转换', () => {
-  const mockForm = new window.FormData()
-  mockForm.set('a', 'a')
-  const res = toFormData(mockForm)
-  assert.strictEqual(res.get('a'), 'a')
-})
+describe('utils', () => {
+  describe('toFormData', () => {
+    test('期望表单格式不转换', () => {
+      const mockForm = new window.FormData()
+      mockForm.set('a', 'a')
+      const res = toFormData(mockForm)
+      expect(res).toBe(mockForm)
+    })
 
-test('toFormData: 参数对象时，遍历赋值', () => {
-  const res = toFormData({
-    a: 'b',
+    test('期望解析对象一层', () => {
+      const res = toFormData({
+        a: 1,
+        b: [1, 2],
+      })
+      expect(res.get('a')).toEqual('1')
+      expect(res.get('b')).toEqual(JSON.stringify([1, 2]))
+    })
   })
-  assert.strictEqual(res.get('a'), 'b')
-})
-
-test('toFormData: 参数嵌套对象时，只转换一层', () => {
-  const res = toFormData({
-    a: [1, 2],
-  })
-  assert.strictEqual(res.get('a'), '[1,2]')
 })

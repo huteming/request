@@ -1,5 +1,5 @@
 import { notification, message } from 'antd'
-import type { Ask, AskConfig } from '../createInstance'
+import { AxiosInstance, AxiosRequestConfig } from 'axios'
 
 const successCode = [0, 200]
 
@@ -8,7 +8,7 @@ const successCode = [0, 200]
 const handlers = new Map([
   [
     400,
-    function handle400({ config }: { config: AskConfig }) {
+    function handle400({ config }: { config: AxiosRequestConfig }) {
       notification.error({
         message: '请求参数错误',
         description: config.url,
@@ -57,7 +57,7 @@ const handlers = new Map([
   ],
   [
     404,
-    function handle404({ config }: { config: AskConfig }) {
+    function handle404({ config }: { config: AxiosRequestConfig }) {
       notification.error({
         message: '接口地址不存在',
         description: config.url,
@@ -67,7 +67,7 @@ const handlers = new Map([
   ],
   [
     405,
-    function handle405({ config }: { config: AskConfig }) {
+    function handle405({ config }: { config: AxiosRequestConfig }) {
       notification.error({
         message: '暂不支持该方法',
         description: config.url,
@@ -83,31 +83,31 @@ const handlers = new Map([
   ],
 ])
 
-export default function presetStandard(instance: Ask) {
+export default function presetStandardPC(instance: AxiosInstance) {
   instance.updateConfig({
     successCode,
   })
 
-  const handleredCode: number[] = []
+  const registCodes: number[] = []
   handlers.forEach((handler, code) => {
-    handleredCode.push(code)
-    instance.registStatusHandler(code, (error) => {
+    registCodes.push(code)
+    instance.registStatusHandler(code, error => {
       handler(error)
     })
-    instance.registCodeHandler(code, (res) => {
+    instance.registCodeHandler(code, res => {
       handler(res)
     })
   })
 
   instance.registCodeHandler(
-    (code) => {
-      return ![...successCode, ...handleredCode].includes(code)
+    code => {
+      return ![...successCode, ...registCodes].includes(code)
     },
-    (response) => {
+    response => {
       const {
         data: { message: description },
       } = response
-      message.error(description || 'code异常')
+      message.error(description || '未处理的code异常')
     },
   )
 }

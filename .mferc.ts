@@ -38,6 +38,12 @@ export const rollup = {
 // }
 
 export const jest = {
-  setupFilesAfterEnv: ['<rootDir>/tests/setupTests.ts'],
-  extraBabelPlugins: [],
+  setupFilesAfterEnv: ['<rootDir>/tests/setupFiles/setupTests.ts'],
+  extraBabelPlugins: [
+    [
+      'import',
+      { libraryName: 'antd', libraryDirectory: 'es', style: true },
+      'antd',
+    ],
+  ],
 }

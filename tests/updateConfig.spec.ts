@@ -1,42 +1,29 @@
 import create from '../src'
 
 describe('updateConfig', () => {
-  it('创建实例后修改配置', async () => {
-    const mockTimeout = 20
+  it('期望可以创建实例后修改配置', async () => {
+    const changedTimeout = 20
+    const changedHeaders = {
+      a: 'changed',
+      c: 'create',
+    }
     const ins = create({
-      isExtract: false,
+      responseOnlyData: false,
       timeout: 10,
-    })
-    ins.updateConfig({
-      timeout: mockTimeout,
-    })
-    const { config } = await ins({
-      url: '/success',
-    })
-    expect(config.timeout).toEqual(mockTimeout)
-    expect(ins.defaults.timeout).toEqual(mockTimeout)
-  })
-
-  it('创建实例后修改header配置', async () => {
-    const ins = create({
-      isExtract: false,
       headers: {
         a: 'a',
         b: 'b',
       },
     })
     ins.updateConfig({
-      headers: {
-        a: 'aa',
-        c: 'c',
-      },
+      timeout: changedTimeout,
+      headers: changedHeaders,
     })
-    const { config } = await ins({
-      url: '/success',
-    })
-    expect(config.headers?.a).toEqual('aa')
+    const { config } = await ins.post('/success')
+
+    expect(config.timeout).toEqual(changedTimeout)
+    expect(config.headers?.a).toEqual('changed')
     expect(config.headers?.b).toEqual('b')
-    expect(config.headers?.c).toEqual('c')
-    expect(ins.defaults.headers?.a).toEqual('aa')
+    expect(config.headers?.c).toEqual('create')
   })
 })

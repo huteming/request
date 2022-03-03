@@ -29,8 +29,32 @@ export default setupServer(
     return res(ctx.status(500))
   }),
 
+  rest.get('/code/0', (req, res, ctx) => {
+    return res(ctx.json({ code: 0, message: 'error: code 0' }))
+  }),
   rest.get('/code/200', (req, res, ctx) => {
     return res(ctx.json({ code: 200, message: 'error: code 200' }))
+  }),
+  rest.get('/code/400', (req, res, ctx) => {
+    return res(ctx.json({ code: 400, message: 'error: code 400' }))
+  }),
+  rest.get('/code/401', (req, res, ctx) => {
+    return res(ctx.json({ code: 401, message: 'error: code 401' }))
+  }),
+  rest.get('/code/402', (req, res, ctx) => {
+    return res(ctx.json({ code: 402, message: 'error: code 402' }))
+  }),
+  rest.get('/code/403', (req, res, ctx) => {
+    return res(ctx.json({ code: 403, message: 'error: code 403' }))
+  }),
+  rest.get('/code/404', (req, res, ctx) => {
+    return res(ctx.json({ code: 404, message: 'error: code 404' }))
+  }),
+  rest.get('/code/405', (req, res, ctx) => {
+    return res(ctx.json({ code: 405, message: 'error: code 405' }))
+  }),
+  rest.get('/code/500', (req, res, ctx) => {
+    return res(ctx.json({ code: 500, message: 'error: code 500' }))
   }),
   rest.get('/code/600', (req, res, ctx) => {
     return res(ctx.json({ code: 600, message: 'error: code 600' }))
@@ -47,5 +71,12 @@ export default setupServer(
   }),
   rest.delete('/success', (req, res, ctx) => {
     return res(ctx.json({ code: 200, data: successData }))
+  }),
+
+  rest.get('/error/code/noMessage', (req, res, ctx) => {
+    return res(ctx.json({ code: 600 }))
+  }),
+  rest.get('/error/status/noMessage', (req, res, ctx) => {
+    return res(ctx.status(400))
   }),
 )

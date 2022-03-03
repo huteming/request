@@ -1,13 +1,13 @@
-import { Ask, AskConfig } from './createInstance'
+import { AxiosInstance, AxiosRequestConfig } from 'axios'
 
-export default (instance: Ask, options: AskConfig) => {
-  const { preset } = options
+export default (instance: AxiosInstance, config: AxiosRequestConfig) => {
+  const { preset } = config
 
   if (!preset) {
     return
   }
 
   preset.forEach((register) => {
-    register(instance)
+    register(instance, config)
   })
 }

@@ -1,5 +1,4 @@
-import { AskConfig, AskError, AskResponse } from '../createInstance'
-import { defaultRequestConfig, defaultRequestHeaders } from './defaults'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 /**
  * 统一创建错误返回
@@ -7,12 +6,12 @@ import { defaultRequestConfig, defaultRequestHeaders } from './defaults'
 export function createError(
   message: string,
   options: {
-    config: AskConfig
+    config: AxiosRequestConfig
     request?: any
-    response?: AskResponse
-    isCancel?: boolean
+    response?: AxiosResponse
+    isCancel: boolean
   },
-): AskError {
+) {
   return {
     name: '自定义错误',
     message,
@@ -23,25 +22,34 @@ export function createError(
 /**
  * 合并默认配置，返回完整配置对象
  */
-export function mergeDefaultConfig(options: AskConfig = {}): AskConfig {
+export function mergeAxiosConfig(
+  defaults: AxiosRequestConfig = {},
+  options: AxiosRequestConfig = {},
+): AxiosRequestConfig {
   return {
-    ...defaultRequestConfig,
+    ...defaults,
     ...options,
     ...{
       headers: {
-        ...defaultRequestHeaders,
+        ...defaults.headers,
         ...options.headers,
       },
     },
   }
 }
 
+const toString = Object.prototype.toString
+
 function isFormData(data: any) {
-  return data instanceof window.FormData
+  return toString.call(data) === '[object FormData]'
 }
 
 function isObject(data: any) {
-  return data === Object(data)
+  return data !== null && typeof data === 'object'
+}
+
+function isFile(data: any) {
+  return toString.call(data) === '[object File]'
 }
 
 /**
@@ -52,9 +60,7 @@ export const toFormData = (data: any) => {
     return data
   }
   return Object.entries<any>(data).reduce((form, [key, value]) => {
-    if (isFormData(value)) {
-      form.append(key, value)
-    } else if (isObject(value)) {
+    if (isObject(value) && !isFile(value)) {
       form.append(key, JSON.stringify(value))
     } else {
       form.append(key, value)
