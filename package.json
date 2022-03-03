@@ -1,6 +1,6 @@
 {
   "name": "@cfe/bigdata-request",
-  "version": "2.1.2",
+  "version": "2.1.4",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
@@ -9,7 +9,8 @@
     "dist",
     "preset",
     "src",
-    "tests"
+    "tests",
+    "types"
   ],
   "scripts": {
     "build": "npm run build:core && npm run build:preset",

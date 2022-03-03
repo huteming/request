@@ -8,12 +8,8 @@ export default function create<T>(
 
   // 重写get方法
   axiosInstance.get = ((origin) => {
-    return <Res = any, Req = any>(
-      url: string,
-      data: Req,
-      requestConfig?: AxiosRequestConfig,
-    ) => {
-      return origin<Req, Res>(url, {
+    return (url: string, data?: any, requestConfig?: any) => {
+      return origin(url, {
         ...requestConfig,
         params: data,
       })
@@ -22,12 +18,8 @@ export default function create<T>(
 
   // 重写delete方法
   axiosInstance.delete = ((origin) => {
-    return <Res = any, Req = any>(
-      url: string,
-      data: Req,
-      requestConfig?: AxiosRequestConfig,
-    ) => {
-      return origin<Req, Res>(url, {
+    return (url: string, data?: any, requestConfig?: any) => {
+      return origin(url, {
         ...requestConfig,
         data,
       })
