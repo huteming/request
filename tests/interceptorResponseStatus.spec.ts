@@ -60,4 +60,19 @@ describe('interceptorResponseStatus', () => {
       expect(mockFn3).toHaveBeenCalledTimes(0)
     }
   })
+
+  it('支持禁用 status 处理器', async () => {
+    const mockFn1 = jest.fn().mockImplementation(() => Promise.resolve(1))
+    const ins = create()
+    ins.registStatusHandler(400, mockFn1)
+    try {
+      await ins({
+        url: '/status/400',
+        disabledStatusHandlers: true,
+      })
+      throw new Error('期望异常')
+    } catch {
+      expect(mockFn1).toHaveBeenCalledTimes(0)
+    }
+  })
 })

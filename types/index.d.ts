@@ -25,6 +25,8 @@ declare module 'axios' {
     successCode?: number | number[]
     responseOnlyData?: boolean
     preset?: Preset[]
+    disabledCodeHandlers?: boolean
+    disabledStatusHandlers?: boolean
   }
 
   export interface AxiosInstance {

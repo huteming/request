@@ -56,21 +56,23 @@ export default function interceptorResponseStatus() {
   const statusInterceptor = (error: AxiosError) => {
     let promise = Promise.resolve(error)
 
-    handlers.forEach((handlers, validator) => {
-      handlers.forEach(handler => {
-        promise = promise.then(() => {
-          const { response } = error
-          const { status } = response || { status: NaN }
-          const equal = status === validator
-          const valid =
-            typeof validator === 'function' && validator(status, error)
-          /* istanbul ignore else */
-          if (equal || valid) {
-            return handler(error)
-          }
+    if (!error?.config?.disabledStatusHandlers) {
+      handlers.forEach((handlers, validator) => {
+        handlers.forEach(handler => {
+          promise = promise.then(() => {
+            const { response } = error
+            const { status } = response || { status: NaN }
+            const equal = status === validator
+            const valid =
+              typeof validator === 'function' && validator(status, error)
+            /* istanbul ignore else */
+            if (equal || valid) {
+              return handler(error)
+            }
+          })
         })
       })
-    })
+    }
 
     promise = promise.then(() => {
       const { response, config, request } = error

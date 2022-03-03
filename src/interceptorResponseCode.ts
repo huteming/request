@@ -36,21 +36,23 @@ export default function interceptorResponseCode() {
     // 不能接收 handler 的返回，因为每个处理函数需要 response 来判断是否处理
     let promise = Promise.resolve(response)
 
-    handlers.forEach((handlers, validator) => {
-      handlers.forEach(handler => {
-        promise = promise.then(() => {
-          const {
-            data: { code },
-          } = response
-          const equal = code === validator
-          const valid = typeof validator === 'function' && validator(code)
-          /* istanbul ignore else */
-          if (equal || valid) {
-            return handler(response)
-          }
+    if (!response?.config?.disabledCodeHandlers) {
+      handlers.forEach((handlers, validator) => {
+        handlers.forEach(handler => {
+          promise = promise.then(() => {
+            const {
+              data: { code },
+            } = response
+            const equal = code === validator
+            const valid = typeof validator === 'function' && validator(code)
+            /* istanbul ignore else */
+            if (equal || valid) {
+              return handler(response)
+            }
+          })
         })
       })
-    })
+    }
 
     // 判断是否为 successCode，异常就打断 promise
     promise = promise.then(() => {

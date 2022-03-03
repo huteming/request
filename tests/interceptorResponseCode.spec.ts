@@ -93,4 +93,20 @@ describe('interceptorResponseCode', () => {
       expect(mockFn3).toHaveBeenCalledTimes(0)
     }
   })
+
+  it('支持禁用 code 处理器', async () => {
+    const mockFn1 = jest.fn().mockImplementation(() => Promise.resolve(1))
+
+    const ins = create()
+    ins.registCodeHandler(600, mockFn1)
+    try {
+      await ins({
+        url: '/code/600',
+        disabledCodeHandlers: true,
+      })
+      throw new Error('期望异常')
+    } catch (err) {
+      expect(mockFn1).toHaveBeenCalledTimes(0)
+    }
+  })
 })
