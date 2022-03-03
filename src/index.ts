@@ -1,12 +1,47 @@
-import { AxiosRequestConfig } from 'axios'
+import { AxiosInstance, AxiosRequestConfig } from 'axios'
 import createInstance from './createInstance'
 import interceptorResponseData from './interceptorResponseData'
-import interceptorResponseCode from './interceptorResponseCode'
-import interceptorResponseStatus from './interceptorResponseStatus'
+import interceptorResponseCode, {
+  CodeHandlerRegister,
+} from './interceptorResponseCode'
+import interceptorResponseStatus, {
+  StatusHandlerRegister,
+} from './interceptorResponseStatus'
 import registerPreset from './registerPreset'
 import updateConfig from './updateConfig'
 import { mergeAxiosConfig } from './utils'
 import { defaultRequestConfig } from './defaults'
+
+interface Preset {
+  (instance: AxiosInstance, config: AxiosRequestConfig): void
+}
+
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    successCode?: number | number[]
+    responseOnlyData?: boolean
+    preset?: Preset[]
+  }
+
+  export interface AxiosInstance {
+    // 类型从 post 复制而来
+    get<T = any, R = AxiosResponse<T>, D = any>(
+      url: string,
+      data?: D,
+      config?: AxiosRequestConfig<D>,
+    ): Promise<R>
+    delete<T = any, R = AxiosResponse<T>, D = any>(
+      url: string,
+      data?: D,
+      config?: AxiosRequestConfig<D>,
+    ): Promise<R>
+
+    postFormData: Axios['post']
+    updateConfig: (config: AxiosRequestConfig) => void
+    registCodeHandler: CodeHandlerRegister
+    registStatusHandler: StatusHandlerRegister
+  }
+}
 
 export default function create(options?: AxiosRequestConfig) {
   const config = mergeAxiosConfig(defaultRequestConfig, options)
