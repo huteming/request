@@ -24,12 +24,12 @@ export const rollup = {
 //   input: 'src/preset/standard-pc.ts',
 //   output: [
 //     {
-//       file: 'dist/preset/standard-pc.esm.js',
+//       file: 'preset/standard-pc.esm.js',
 //       format: 'esm',
 //       target: 'browser', // "node" | "browser"
 //     },
 //     {
-//       file: 'dist/preset/standard-pc.js',
+//       file: 'preset/standard-pc.js',
 //       format: 'cjs',
 //       exports: 'auto',
 //       target: 'browser', // "node" | "browser"

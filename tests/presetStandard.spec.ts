@@ -53,20 +53,6 @@ describe('preset standard', () => {
     }
   })
 
-  test('处理 code=400', async () => {
-    const ins = create({
-      preset: [presetStandardPC],
-    })
-    try {
-      await ins({
-        url: '/code/400',
-      })
-      assert.ok(false)
-    } catch {
-      expect(spyNotify).toBeCalledTimes(1)
-    }
-  })
-
   it('处理 status=401', async () => {
     const ins = create({
       preset: [presetStandardPC],
@@ -74,20 +60,6 @@ describe('preset standard', () => {
     try {
       await ins({
         url: '/status/401',
-      })
-      assert.ok(false)
-    } catch {
-      expect(spyMessage).toBeCalledTimes(1)
-    }
-  })
-
-  it('处理 code=401', async () => {
-    const ins = create({
-      preset: [presetStandardPC],
-    })
-    try {
-      await ins({
-        url: '/code/401',
       })
       assert.ok(false)
     } catch {
@@ -109,20 +81,6 @@ describe('preset standard', () => {
     }
   })
 
-  it('处理 code=402', async () => {
-    const ins = create({
-      preset: [presetStandardPC],
-    })
-    try {
-      await ins({
-        url: '/code/402',
-      })
-      assert.ok(false)
-    } catch {
-      expect(spyMessage).toBeCalledTimes(1)
-    }
-  })
-
   it('处理 status=403', async () => {
     const ins = create({
       preset: [presetStandardPC],
@@ -130,20 +88,6 @@ describe('preset standard', () => {
     try {
       await ins({
         url: '/status/403',
-      })
-      assert.ok(false)
-    } catch {
-      expect(spyMessage).toBeCalledTimes(1)
-    }
-  })
-
-  it('处理 code=403', async () => {
-    const ins = create({
-      preset: [presetStandardPC],
-    })
-    try {
-      await ins({
-        url: '/code/403',
       })
       assert.ok(false)
     } catch {
@@ -165,20 +109,6 @@ describe('preset standard', () => {
     }
   })
 
-  it('处理 code=404', async () => {
-    const ins = create({
-      preset: [presetStandardPC],
-    })
-    try {
-      await ins({
-        url: '/code/404',
-      })
-      assert.ok(false)
-    } catch {
-      expect(spyNotify).toBeCalledTimes(1)
-    }
-  })
-
   it('处理 status=405', async () => {
     const ins = create({
       preset: [presetStandardPC],
@@ -186,20 +116,6 @@ describe('preset standard', () => {
     try {
       await ins({
         url: '/status/405',
-      })
-      assert.ok(false)
-    } catch {
-      expect(spyNotify).toBeCalledTimes(1)
-    }
-  })
-
-  it('处理 code=405', async () => {
-    const ins = create({
-      preset: [presetStandardPC],
-    })
-    try {
-      await ins({
-        url: '/code/405',
       })
       assert.ok(false)
     } catch {
@@ -221,21 +137,7 @@ describe('preset standard', () => {
     }
   })
 
-  it('处理 code=500', async () => {
-    const ins = create({
-      preset: [presetStandardPC],
-    })
-    try {
-      await ins({
-        url: '/code/500',
-      })
-      assert.ok(false)
-    } catch {
-      expect(spyMessage).toBeCalledTimes(1)
-    }
-  })
-
-  it('处理未规范状态', async () => {
+  it('处理 code 异常', async () => {
     const ins = create({
       preset: [presetStandardPC],
     })
@@ -245,7 +147,23 @@ describe('preset standard', () => {
       })
       assert.ok(false)
     } catch {
+      expect(spyMessage).toBeCalledTimes(1)
+      expect(spyMessage).toBeCalledWith('error: code 600')
+    }
+  })
+
+  it('处理其他 status 异常', async () => {
+    const ins = create({
+      preset: [presetStandardPC],
+    })
+    try {
+      await ins({
+        url: '/status/600',
+      })
+      assert.ok(false)
+    } catch {
       expect(spyMessage).toHaveBeenCalledTimes(1)
+      expect(spyMessage).toBeCalledWith('Request failed with status code 600')
     }
   })
 })

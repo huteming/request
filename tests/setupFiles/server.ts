@@ -28,6 +28,9 @@ export default setupServer(
   rest.get('/status/500', (req, res, ctx) => {
     return res(ctx.status(500))
   }),
+  rest.get('/status/600', (req, res, ctx) => {
+    return res(ctx.status(600))
+  }),
 
   rest.get('/code/0', (req, res, ctx) => {
     return res(ctx.json({ code: 0, message: 'error: code 0' }))

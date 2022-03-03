@@ -1,11 +1,14 @@
 import { notification, message } from 'antd'
 import { AxiosInstance, AxiosRequestConfig } from 'axios'
 
-const successCode = [0, 200]
-
-// 开发的错误，用 notification
-// 用户使用时的错误，用 message
-const handlers = new Map([
+/**
+ * 1. 开发的错误，用 notification
+ * 2. 用户使用时的错误，用 message
+ * 3. code 错误，是经过服务端包装的，所以可以很简单的处理：
+ *      异常 code，就取 data.message 做提示，不需要客户端自定义信息
+ * 4. status 错误，防止敏感信息泄漏，做自定义错误信息（可以持续完善）
+ */
+const statusHandlers = new Map([
   [
     400,
     function handle400({ config }: { config: AxiosRequestConfig }) {
@@ -84,30 +87,35 @@ const handlers = new Map([
 ])
 
 export default function presetStandardPC(instance: AxiosInstance) {
+  const successCode = [0, 200]
+
   instance.updateConfig({
     successCode,
   })
 
-  const registCodes: number[] = []
-  handlers.forEach((handler, code) => {
-    registCodes.push(code)
-    instance.registStatusHandler(code, error => {
-      handler(error)
-    })
-    instance.registCodeHandler(code, res => {
-      handler(res)
-    })
+  statusHandlers.forEach((handler, code) => {
+    instance.registStatusHandler(code, handler)
   })
 
   instance.registCodeHandler(
     code => {
-      return ![...successCode, ...registCodes].includes(code)
+      return !successCode.includes(code)
     },
     response => {
       const {
-        data: { message: description },
+        data: { message: msg },
       } = response
-      message.error(description || '未处理的code异常')
+      message.error(msg || 'code 异常, 但 message 缺失')
+    },
+  )
+
+  instance.registStatusHandler(
+    status => {
+      return ![...statusHandlers.keys()].includes(status)
+    },
+    error => {
+      const { response, message: msg } = error
+      message.error(response?.data?.message || msg)
     },
   )
 }
