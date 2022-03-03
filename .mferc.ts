@@ -7,24 +7,35 @@ export const rollup = {
   input: 'src/index.ts',
   output: [
     {
-      file: 'lib/index.js',
-      format: 'cjs', // 输出的文件类型 (amd, cjs, esm, iife, umd)
-      exports: 'auto',
+      file: 'dist/index.esm.js',
+      format: 'esm',
       target: 'browser', // "node" | "browser"
-      // minify: false, // boolean
     },
     {
-      file: 'lib/index.esm.js',
-      format: 'esm', // 输出的文件类型 (amd, cjs, esm, iife, umd)
-      // exports: 'auto',
+      file: 'dist/index.js',
+      format: 'cjs',
+      exports: 'auto',
       target: 'browser', // "node" | "browser"
-      // minify: false, // boolean
     },
   ],
-  plugins: [],
-  external: [],
-  extraBabelPlugins: [],
 }
+
+// export const rollup = {
+//   input: 'src/preset/standard-pc.ts',
+//   output: [
+//     {
+//       file: 'dist/preset/standard-pc.esm.js',
+//       format: 'esm',
+//       target: 'browser', // "node" | "browser"
+//     },
+//     {
+//       file: 'dist/preset/standard-pc.js',
+//       format: 'cjs',
+//       exports: 'auto',
+//       target: 'browser', // "node" | "browser"
+//     },
+//   ],
+// }
 
 // export const babel = {
 //   output: [

@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "build": "npm run build:core && npm run build:preset",
-    "build:preset": "bigdata-rollup build --config ./rollup.preset.js",
-    "build:core": "bigdata-rollup build",
+    "build:core": "mfe build",
+    "build:preset": "mfe build",
     "test": "mfe test"
   },
   "devDependencies": {
@@ -21,5 +21,8 @@
   "dependencies": {
     "axios": "^0.26.0",
     "qs": "^6.10.3"
+  },
+  "peerDependencies": {
+    "antd": "^4.16.13"
   }
 }
