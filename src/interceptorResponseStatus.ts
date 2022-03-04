@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import { createError } from './utils'
+import { createError, getErrorMessage } from './utils'
 
 type StatusValidator = number | ((status: number, erros: AxiosError) => boolean)
 
@@ -9,28 +9,6 @@ interface StatusHandler {
 
 export interface StatusHandlerRegister {
   (status: StatusValidator, handler: StatusHandler): void
-}
-
-function getErrorMessage(error: AxiosError): string {
-  const { response, message } = error
-
-  // 优先选择 response 中的消息
-  if (response?.data?.message) {
-    return response.data.message as string
-  }
-  /* istanbul ignore next */
-  if (!message) {
-    return '网络繁忙，请稍后再试！'
-  }
-  /* istanbul ignore next */
-  if (message.includes('timeout')) {
-    return '请求接口超时！'
-  }
-  /* istanbul ignore next */
-  if (message.includes('Network')) {
-    return '网络错误，请稍后再试！'
-  }
-  return message
 }
 
 export default function interceptorResponseStatus() {

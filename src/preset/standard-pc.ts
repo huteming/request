@@ -1,5 +1,30 @@
 import { notification, message } from 'antd'
 import { AxiosInstance, AxiosRequestConfig } from 'axios'
+import { getErrorMessage } from '../utils'
+
+function toLogin(win: Window) {
+  const local = win.location
+  local.assign(`${local.origin}/data-platform/login?redirect=${local.href}`)
+}
+
+function isProduction() {
+  return window.location.hostname.includes('caocaokeji')
+}
+
+// 重定向登录
+function redirectToLogin() {
+  // 在容器内, 将容器地址重定向
+  const inIframe = window.parent !== window.self
+  if (inIframe && window.top) {
+    toLogin(window.top)
+    return
+  }
+  // 单独标签页 && 线上环境，重定向
+  if (isProduction()) {
+    toLogin(window)
+    return
+  }
+}
 
 /**
  * 1. 开发的错误，用 notification
@@ -8,7 +33,18 @@ import { AxiosInstance, AxiosRequestConfig } from 'axios'
  *      异常 code，就取 data.message 做提示，不需要客户端自定义信息
  * 4. status 错误，防止敏感信息泄漏，做自定义错误信息（可以持续完善）
  */
+const commonHandlers = new Map([
+  [
+    401,
+    function handle401() {
+      message.error('请重新登录')
+      redirectToLogin()
+    },
+  ],
+])
+
 const statusHandlers = new Map([
+  ...commonHandlers,
   [
     400,
     function handle400({ config }: { config: AxiosRequestConfig }) {
@@ -17,33 +53,6 @@ const statusHandlers = new Map([
         description: config.url,
         duration: 6,
       })
-    },
-  ],
-  [
-    401,
-    function handle401() {
-      message.error('请重新登录')
-
-      // 在乾坤容器内, 将容器地址重定向
-      const inIframe = window.parent !== window.self
-      if (inIframe) {
-        const redirect = window.top!.location.href
-        window.top!.location.assign(
-          `${
-            window.top!.location.origin
-          }/data-platform/login?redirect=${redirect}`,
-        )
-        return
-      }
-      // 单独标签页打开 & 不是开发环境，直接重定向
-      const validHost = window.location.hostname.includes('caocaokeji')
-      if (validHost) {
-        const redirect = window.location.href
-        window.location.assign(
-          `${window.location.origin}/data-platform/login?redirect=${redirect}`,
-        )
-        return
-      }
     },
   ],
   [
@@ -86,6 +95,8 @@ const statusHandlers = new Map([
   ],
 ])
 
+const codeHandlers = new Map([...commonHandlers])
+
 export default function presetStandardPC(instance: AxiosInstance) {
   const successCode = [0, 200]
 
@@ -93,13 +104,17 @@ export default function presetStandardPC(instance: AxiosInstance) {
     successCode,
   })
 
-  statusHandlers.forEach((handler, code) => {
-    instance.registStatusHandler(code, handler)
+  codeHandlers.forEach((handler, code) => {
+    instance.registCodeHandler(code, handler)
+  })
+
+  statusHandlers.forEach((handler, status) => {
+    instance.registStatusHandler(status, handler)
   })
 
   instance.registCodeHandler(
     code => {
-      return !successCode.includes(code)
+      return ![...successCode, ...codeHandlers.keys()].includes(code)
     },
     response => {
       const {
@@ -114,8 +129,7 @@ export default function presetStandardPC(instance: AxiosInstance) {
       return ![...statusHandlers.keys()].includes(status)
     },
     error => {
-      const { response, message: msg } = error
-      message.error(response?.data?.message || msg)
+      message.error(getErrorMessage(error))
     },
   )
 }
