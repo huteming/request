@@ -36,7 +36,7 @@ export default function interceptorResponseStatus() {
 
     if (!error?.config?.disabledStatusHandlers) {
       handlers.forEach((handlers, validator) => {
-        handlers.forEach(handler => {
+        handlers.forEach((handler) => {
           promise = promise.then(() => {
             const { response } = error
             const { status } = response || { status: NaN }
@@ -56,6 +56,8 @@ export default function interceptorResponseStatus() {
       const { response, config, request } = error
       const message = getErrorMessage(error)
 
+      // 这里 Error 的 message 异常信息一般用作控制台查看
+      // 真正会弹窗提示的是 response 里的 message
       const customError = createError(message, {
         config,
         request,

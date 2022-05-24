@@ -1,6 +1,5 @@
 import { AxiosResponse } from 'axios'
 import { createError } from './utils'
-import { defaultErrorMessage } from './defaults'
 
 type CodeValidater = number | ((code: number) => boolean)
 
@@ -38,7 +37,7 @@ export default function interceptorResponseCode() {
 
     if (!response?.config?.disabledCodeHandlers) {
       handlers.forEach((handlers, validator) => {
-        handlers.forEach(handler => {
+        handlers.forEach((handler) => {
           promise = promise.then(() => {
             const {
               data: { code },
@@ -56,23 +55,25 @@ export default function interceptorResponseCode() {
 
     // 判断是否为 successCode，异常就打断 promise
     promise = promise.then(() => {
-      const {
-        data: { code, message },
-        config,
-      } = response
+      const { data, config } = response
       const { successCode } = config
-      const equalSuccessCode = successCode === code
+      const equalSuccessCode = successCode === data?.code
       const containSuccessCode =
-        Array.isArray(successCode) && successCode.includes(code)
+        Array.isArray(successCode) && successCode.includes(data?.code)
       if (equalSuccessCode || containSuccessCode) {
         return response
       }
 
-      const customError = createError(message || defaultErrorMessage, {
-        config,
-        response,
-        isCancel: false,
-      })
+      // 这里 Error 的 message 异常信息一般用作控制台查看
+      // 真正会弹窗提示的是 response 里的 message
+      const customError = createError(
+        data?.message || 'code 异常. 但 message 缺失',
+        {
+          config,
+          response,
+          isCancel: false,
+        },
+      )
 
       return Promise.reject(customError)
     })

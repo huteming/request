@@ -12,6 +12,7 @@ function isProduction() {
 }
 
 // 重定向登录
+// 注意, 此方法已同步到 bigdata-ui/utils 中, 修改时注意同步
 function redirectToLogin() {
   // 在容器内, 将容器地址重定向
   const inIframe = window.parent !== window.self
@@ -113,22 +114,20 @@ export default function presetStandardPC(instance: AxiosInstance) {
   })
 
   instance.registCodeHandler(
-    code => {
+    (code) => {
       return ![...successCode, ...codeHandlers.keys()].includes(code)
     },
-    response => {
-      const {
-        data: { message: msg },
-      } = response
-      message.error(msg || 'code 异常, 但 message 缺失')
+    (response) => {
+      const { data } = response
+      message.error(data?.message || 'code 异常')
     },
   )
 
   instance.registStatusHandler(
-    status => {
+    (status) => {
       return ![...statusHandlers.keys()].includes(status)
     },
-    error => {
+    (error) => {
       message.error(getErrorMessage(error))
     },
   )

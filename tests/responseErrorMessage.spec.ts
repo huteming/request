@@ -1,5 +1,4 @@
 import create from '../src'
-import { defaultErrorMessage } from '@/defaults'
 
 describe('responseErrorMessage', () => {
   it('code 异常, 期望优先显示响应中的 message', async () => {
@@ -12,19 +11,6 @@ describe('responseErrorMessage', () => {
       throw new Error('期望异常')
     } catch (err: any) {
       expect(err.message).toEqual('error: code 600')
-    }
-  })
-
-  it('code 异常, 响应中没有 message, 使用默认提示', async () => {
-    const ins = create()
-
-    try {
-      await ins({
-        url: '/error/code/noMessage',
-      })
-      throw new Error('期望异常')
-    } catch (err: any) {
-      expect(err.message).toEqual(defaultErrorMessage)
     }
   })
 

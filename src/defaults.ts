@@ -14,5 +14,3 @@ export const defaultRequestConfig: AxiosRequestConfig = {
     'X-Requested-With': 'XMLHttpRequest',
   },
 }
-
-export const defaultErrorMessage = '自定义错误消息'
