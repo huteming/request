@@ -16,10 +16,11 @@
     "build": "npm run build:core && npm run build:preset",
     "build:core": "mfe build",
     "build:preset": "mfe build",
-    "test": "mfe test"
+    "test": "mfe test",
+    "release": "mfe release"
   },
   "devDependencies": {
-    "@cfe/bigdata-mfe": "^0.4.0",
+    "@cfe/bigdata-mfe": "^0.4.1",
     "@types/qs": "^6.9.7",
     "antd": "^4.18.9",
     "babel-plugin-import": "^1.13.3",
