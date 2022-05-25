@@ -17,34 +17,6 @@ export const rollup = {
   ],
 }
 
-// export const rollup = {
-//   input: 'src/preset/standard-pc.ts',
-//   output: [
-//     {
-//       file: 'preset/standard-pc.esm.js',
-//       format: 'esm',
-//       target: 'browser', // "node" | "browser"
-//     },
-//     {
-//       file: 'preset/standard-pc.js',
-//       format: 'cjs',
-//       exports: 'auto',
-//       target: 'browser', // "node" | "browser"
-//     },
-//   ],
-// }
-
-// export const babel = {
-//   output: [
-//     {
-//       dir: 'dist',
-//       format: 'esm', // 'esm' | 'cjs'
-//       target: 'browser', // "node" | "browser"
-//     },
-//   ],
-//   plugins: [],
-// }
-
 export const jest = {
   setupFilesAfterEnv: ['<rootDir>/tests/setupFiles/setupTests.ts'],
   extraBabelPlugins: [

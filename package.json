@@ -15,7 +15,7 @@
   "scripts": {
     "build": "npm run build:core && npm run build:preset",
     "build:core": "mfe build",
-    "build:preset": "mfe build",
+    "build:preset": "mfe build --config .mferc-preset.ts",
     "test": "mfe test",
     "release": "mfe release"
   },
