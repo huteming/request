@@ -1,5 +1,5 @@
 {
-  "name": "@cfe/bigdata-request",
+  "name": "@cfe/request",
   "version": "2.2.3",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -7,30 +7,19 @@
   "license": "MIT",
   "files": [
     "dist",
-    "preset",
-    "src",
-    "tests",
-    "types"
+    "preset"
   ],
   "scripts": {
-    "build": "npm run build:core && npm run build:preset",
-    "build:core": "mfe build",
-    "build:preset": "mfe build --config .mferc-preset.ts",
+    "build": "mfe build",
     "test": "mfe test",
     "release": "mfe release"
   },
   "devDependencies": {
-    "@cfe/bigdata-mfe": "^0.4.1",
-    "@types/qs": "^6.9.7",
-    "antd": "^4.18.9",
-    "babel-plugin-import": "^1.13.3",
+    "@hutm/footing": "^0.1.0",
     "msw": "^0.38.1"
   },
-  "dependencies": {
-    "axios": "^0.26.0",
-    "qs": "^6.10.3"
-  },
+  "dependencies": {},
   "peerDependencies": {
-    "antd": "^4.16.13"
+    "axios": "0.27.x"
   }
 }

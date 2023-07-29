@@ -1,8 +1,8 @@
 import create from '../src'
-import { successData } from './setupFiles/server'
+import { successData } from './shared/constants'
 
 describe('request', () => {
-  it('期望默认只返回 response 中的 data', async () => {
+  it('[default]: 期望只返回 response 中的 data', async () => {
     const ins = create()
     const res = await ins({
       url: '/success',
@@ -10,74 +10,33 @@ describe('request', () => {
     expect(res).toEqual(successData)
   })
 
-  it('request', async () => {
+  it('[default]: 期望请求体类型为 application/json', async () => {
     const ins = create()
-    const res = await ins({
+    const { config } = await ins({
       url: '/success',
+      method: 'post',
+      onlyReturnData: false,
     })
-    expect(res).toEqual(successData)
+    expect(config.headers?.['Accept']).toContain('application/json')
   })
 
-  it('get', async () => {
+  it('期望 get 参数顺序重写为和 post 一致', async () => {
     const ins = create()
-    const mockData = { a: 'a' }
-    const { config, data } = await ins.get('/success', mockData, {
-      responseOnlyData: false,
-    })
-    expect(data.data).toEqual(successData)
-    expect(config.params).toEqual(mockData)
-  })
-
-  it('delete', async () => {
-    const mockData = { a: 'a' }
-    const ins = create()
-    const { config, data } = await ins.delete('/success', mockData, {
-      responseOnlyData: false,
+    const mockParams = { a: 'a' }
+    const { config, data } = await ins.get('/success', mockParams, {
+      onlyReturnData: false,
     })
     expect(data.data).toEqual(successData)
-    expect(config.data).toEqual(JSON.stringify(mockData))
+    expect(config.params).toEqual(mockParams)
   })
 
-  it('post', async () => {
+  it('期望 delete 参数顺序重写为和 post 一致', async () => {
     const ins = create()
-    const mockData = { a: 'a' }
-    const { config, data } = await ins.post('/success', mockData, {
-      responseOnlyData: false,
+    const mockParams = { a: 'a' }
+    const { config, data } = await ins.delete('/success', mockParams, {
+      onlyReturnData: false,
     })
     expect(data.data).toEqual(successData)
-    expect(config.data).toEqual(JSON.stringify(mockData))
-  })
-
-  it('put', async () => {
-    const ins = create()
-    const mockData = { a: 'a' }
-    const { config, data } = await ins.put('/success', mockData, {
-      responseOnlyData: false,
-    })
-    expect(data.data).toEqual(successData)
-    expect(config.data).toEqual(JSON.stringify(mockData))
-  })
-
-  it('postFormData', async () => {
-    const ins = create()
-    const mockData = { a: 'a' }
-    const { config, data } = await ins.postFormData('/success', mockData, {
-      responseOnlyData: false,
-    })
-    expect(data.data).toEqual(successData)
-    expect(config.method).toEqual('post')
-    expect(config.data.get('a')).toEqual('a')
-  })
-
-  it('期望默认的请求体类型为 application/json', async () => {
-    const ins = create()
-    const { config } = await ins.post(
-      '/success',
-      {},
-      {
-        responseOnlyData: false,
-      },
-    )
-    expect(config.headers?.['Content-Type']).toEqual('application/json')
+    expect(config.data).toEqual(JSON.stringify(mockParams))
   })
 })
